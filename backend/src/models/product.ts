@@ -21,15 +21,15 @@ const imageSchema = new mongoose.Schema<IImage>({
 const productSchema = new mongoose.Schema<IProduct>({
   title: {
     type: String,
-    minlength: 2,
-    maxlength: 30,
-    required: true,
+    minlength: [2, 'Минимальная длина поля "title" - 2'],
+    maxlength: [30, 'Максимальная длина поля "title" - 30'],
+    required: [true, 'Поле "title" должно быть заполнено'],
     unique: true,
   },
   image: imageSchema,
   category: {
     type: String,
-    required: true,
+    required: [true, 'Поле "category" должно быть заполнено'],
   },
   description: {
     type: String,

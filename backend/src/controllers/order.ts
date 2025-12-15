@@ -61,7 +61,6 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
       "total": total,
     })
 	} catch (error) {
-		console.error('Ошибка создания заказа', error);
 		next(error);
 	}
 }
