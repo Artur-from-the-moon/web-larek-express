@@ -49,14 +49,12 @@ const productSchema = Joi.object({
     'any.required': 'category это обязательное поле',
     'string.empty': 'Поле category не может быть пустым',
   }),
-  description: Joi.string().required().messages({
+  description: Joi.string().messages({
     'string.base': 'description должен быть string',
-    'any.required': 'description это обязательное поле',
     'string.empty': 'Поле description не может быть пустым',
   }),
-  price: Joi.number().required().messages({
+  price: Joi.number().messages({
     'number.base': 'price должен быть number',
-    'any.required': 'price это обязательное поле',
     'string.empty': 'Поле price не может быть пустым',
   }).default(null)
 });
