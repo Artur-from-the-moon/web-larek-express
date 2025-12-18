@@ -7,13 +7,14 @@ import ordersRouter from './routes/order';
 import errorHandler from './middlewares/error-handler';
 import { errors } from 'celebrate';
 import { requestLogger, errorLogger } from './middlewares/logger';
+import { config } from './config';
 
 const app = express();
 app.use(cors());
 
 app.use(express.json());
 
-mongoose.connect('mongodb://127.0.0.1:27017/weblarek');
+mongoose.connect(config.DB_ADDRESS);
 
 app.use(requestLogger);
 
@@ -27,6 +28,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(errors());
 app.use(errorHandler);
 
-app.listen(3000, () => {
-  console.log('listening on port 3000');
+app.listen(config.PORT, () => {
+  console.log(`listening on port ${config.PORT}`);
 });
