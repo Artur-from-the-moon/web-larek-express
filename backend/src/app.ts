@@ -5,6 +5,7 @@ import cors from 'cors';
 import userRouter from './routes/user';
 import productsRouter from './routes/products';
 import ordersRouter from './routes/order';
+import uploadRouter from './routes/upload';
 import errorHandler from './middlewares/error-handler';
 import { errors } from 'celebrate';
 import { requestLogger, errorLogger } from './middlewares/logger';
@@ -28,6 +29,7 @@ app.use(requestLogger);
 app.use('/auth', userRouter);
 app.use('/product', productsRouter);
 app.use('/order', ordersRouter);
+app.use('/upload', uploadRouter)
 
 app.use(errorLogger);
 
