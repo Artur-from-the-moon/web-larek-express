@@ -63,6 +63,34 @@ export const validateProductBody = celebrate({
   [Segments.BODY]: productSchema
 });
 
+const updateProductSchema = Joi.object({
+  title: Joi.string().min(2).max(30).messages({
+    'string.min': 'Минимальная длина поля title - 2',
+    'string.max': 'Максимальная длина поля title - 30',
+  }),
+  image: Joi.object({
+    fileName: Joi.string().messages({
+      'string.base': 'fileName должен быть string',
+    }),
+    originalName: Joi.string().messages({
+      'string.base': 'originalName должен быть string',
+    })
+  }),
+  category: Joi.string().messages({
+    'string.base': 'category должен быть string',
+  }),
+  description: Joi.string().messages({
+    'string.base': 'description должен быть string',
+  }),
+  price: Joi.number().messages({
+    'number.base': 'price должен быть number',
+  })
+});
+
+export const validateUpdateProductBody = celebrate({
+  [Segments.BODY]: updateProductSchema
+});
+
 const registerSchema = Joi.object({
   name: Joi.string()
   .min(2)
