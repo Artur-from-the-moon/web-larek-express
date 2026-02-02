@@ -2,14 +2,15 @@ import express from 'express';
 import mongoose from 'mongoose';
 import path from 'path';
 import cors from 'cors';
+import { errors } from 'celebrate';
 import userRouter from './routes/user';
 import productsRouter from './routes/products';
 import ordersRouter from './routes/order';
 import uploadRouter from './routes/upload';
 import errorHandler from './middlewares/error-handler';
-import { errors } from 'celebrate';
 import { requestLogger, errorLogger } from './middlewares/logger';
 import { config } from './config';
+
 const cookieParser = require('cookie-parser');
 
 const app = express();
@@ -17,7 +18,7 @@ app.use(cookieParser());
 
 app.use(cors({
   origin: config.ORIGIN_ALLOW,
-  credentials: true
+  credentials: true,
 }));
 
 app.use(express.json());
@@ -29,7 +30,7 @@ app.use(requestLogger);
 app.use('/auth', userRouter);
 app.use('/product', productsRouter);
 app.use('/order', ordersRouter);
-app.use('/upload', uploadRouter)
+app.use('/upload', uploadRouter);
 
 app.use(errorLogger);
 

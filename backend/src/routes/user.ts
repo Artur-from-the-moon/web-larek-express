@@ -1,7 +1,10 @@
 import { Router } from 'express';
-import { login, register, getCurrentUser, logout, refreshAccessToken } from '../controllers/auth';
+import {
+  login, register, getCurrentUser, logout, refreshAccessToken,
+} from '../controllers/auth';
 import { validateRegisterBody } from '../middlewares/validatons';
 import auth from '../middlewares/auth';
+
 const router = Router();
 
 router.post('/login', login);

@@ -2,7 +2,7 @@ import winston from 'winston';
 import expressWinston from 'express-winston';
 import path from 'path';
 
-const logsDir = path.join(__dirname, '../../logs')
+const logsDir = path.join(__dirname, '../../logs');
 
 export const requestLogger = expressWinston.logger({
   transports: [

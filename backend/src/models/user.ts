@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 interface IToken {
@@ -18,9 +18,9 @@ interface UserModel extends mongoose.Model<IUser> {
 
 const tokenSchema = new mongoose.Schema<IToken>({
   token: {
-    type: String
-  }
-})
+    type: String,
+  },
+});
 
 const userSchema = new mongoose.Schema<IUser>({
   name: {
@@ -44,23 +44,23 @@ const userSchema = new mongoose.Schema<IUser>({
   tokens: {
     type: [tokenSchema],
     select: false,
-  }
-})
+  },
+});
 
 userSchema.static('findUserByCredentials', function findUserByCredentials(email: string, password: string) {
   return this.findOne({ email }).select('+password')
     .then((user: IUser) => {
-      if(!user) {
-        return Promise.reject(new Error('Неправильная почта или пароль'))
+      if (!user) {
+        return Promise.reject(new Error('Неправильная почта или пароль'));
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
-          if(!matched) {
-            return Promise.reject(new Error('Неправильная почта или пароль'))
+          if (!matched) {
+            return Promise.reject(new Error('Неправильная почта или пароль'));
           }
           return user;
-        })
-    })
-})
+        });
+    });
+});
 
 export default mongoose.model<IUser, UserModel>('User', userSchema);
