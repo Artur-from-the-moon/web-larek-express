@@ -152,7 +152,7 @@ export const refreshAccessToken = async (req: Request, res: Response, next: Next
     try {
       payload = jwt.verify(REFRESH_TOKEN, 'some-secret-refresh-key') as any;
     } catch (error) {
-      return res.status(401).send({ message: 'Невалидный токен' });
+      return next(new BadRequestError('Невалидный токен'));
     }
     const user = await User.findById(payload._id)
     if(!user) {
