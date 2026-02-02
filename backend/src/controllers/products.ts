@@ -27,7 +27,7 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
   Product.create({description, image, title, category, price})
     .then((product) => res.send({ data: product }))
     .catch((error) => {
-      if (error instanceof Error && error.message.includes('E1100')) {
+      if (error instanceof Error && error.message.includes('E11000')) {
         return next(new ConflictError('Товар с таким заголовком уже существует'));
       }
       next(error);
@@ -49,7 +49,7 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
   Product.findByIdAndUpdate(productId, { description, image, title, category, price }, { new: true })
     .then((product) => res.send({ data: product }))
     .catch((error) => {
-      if (error instanceof Error && error.message.includes('E1100')) {
+      if (error instanceof Error && error.message.includes('E11000')) {
         return next(new ConflictError('Товар с таким заголовком уже существует'));
       }
       next(error);

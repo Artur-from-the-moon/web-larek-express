@@ -7,22 +7,7 @@ import ConflictError from '../errors/conflict-error';
 import BadRequestError from '../errors/bad-request-error';
 
 export const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
-  const { authorization } = req.headers;
-
-  if(!authorization || !authorization.startsWith('Bearer ')) {
-    return res.status(401).send({ message: 'Необходима авторизация' })
-  }
-  
-  const token = authorization.replace('Bearer ', '');
-
-  let payload 
-  try {
-    payload = jwt.verify(token, 'some-secret-access-key') as any
-  } catch(err) {
-    return res.status(401).send({ message: 'Необходима авторизация' })
-  }
-
-  User.findById(payload._id)
+  User.findById((req as any).user._id)
     .then((user: any) => {
       if(!user) {
         return next(new NotFoundError('Пользователь не найден'))
@@ -63,7 +48,7 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
 
       res.cookie("REFRESH_TOKEN", refreshToken, {
         sameSite: "lax",
-        secure: false,
+        secure: true,
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         path: '/'
@@ -104,7 +89,7 @@ export const register = (req: Request, res: Response, next: NextFunction) => {
 
       res.cookie("REFRESH_TOKEN", refreshToken, {
         sameSite: "lax",
-        secure: false,
+        secure: true,
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         path: '/'
@@ -146,7 +131,7 @@ export const logout = async (req: Request, res: Response, next: NextFunction) =>
     }
 
     res.clearCookie('REFRESH_TOKEN', {
-      sameSite: "none",
+      sameSite: "lax",
       secure: true,
       httpOnly: true,
     })
@@ -187,7 +172,7 @@ export const refreshAccessToken = async (req: Request, res: Response, next: Next
 
     res.cookie("REFRESH_TOKEN", refreshToken, {
       sameSite: "lax",
-      secure: false,
+      secure: true,
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: '/'
