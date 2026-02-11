@@ -96,7 +96,7 @@ const registerSchema = Joi.object({
   name: Joi.string()
     .min(2)
     .max(30)
-    .pattern(/^[a-zA-Zа-яА-ЯёЁ\s\-]+$/)
+    .pattern(/^[a-zA-Zа-яА-ЯёЁ\s-]+$/)
     .required()
     .messages({
       'any.required': 'name это обязательное поле',
@@ -112,7 +112,7 @@ const registerSchema = Joi.object({
   }),
   password: Joi.string()
     .min(6)
-    .pattern(/^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]+$/)
+    .pattern(/^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~`]+$/)
     .required()
     .messages({
       'any.required': 'Поле password не должно быть пустым',

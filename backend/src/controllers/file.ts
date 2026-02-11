@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-export const uploadFile = (req: Request, res: Response, next: NextFunction) => {
+const uploadFile = (req: Request, res: Response, next: NextFunction) => {
   const { file } = req;
 
   if (!file) {
@@ -13,3 +13,5 @@ export const uploadFile = (req: Request, res: Response, next: NextFunction) => {
     originalName: file.originalname,
   });
 };
+
+export default uploadFile;

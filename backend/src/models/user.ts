@@ -13,7 +13,7 @@ interface IUser {
 }
 
 interface UserModel extends mongoose.Model<IUser> {
-  findUserByCredentials: (email: string, password: string) => Promise<mongoose.Document<unknown, any, IUser>>
+  findUserByCredentials: (email: string, password: string) => Promise<mongoose.Document<IUser>>;
 }
 
 const tokenSchema = new mongoose.Schema<IToken>({

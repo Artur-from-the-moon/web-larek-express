@@ -1,4 +1,4 @@
-export const config = {
+const config = {
   PORT: Number(process.env.PORT) || 3000,
   DB_ADDRESS: process.env.DB_ADDRESS || 'mongodb://127.0.0.1:27017/weblarek',
   UPLOAD_PATH: process.env.UPLOAD_PATH || 'images',
@@ -7,3 +7,5 @@ export const config = {
   AUTH_REFRESH_TOKEN_EXPIRY: process.env.AUTH_REFRESH_TOKEN_EXPIRY || '7d',
   AUTH_ACCESS_TOKEN_EXPIRY: process.env.AUTH_ACCESS_TOKEN_EXPIRY || '10m',
 };
+
+export default config;

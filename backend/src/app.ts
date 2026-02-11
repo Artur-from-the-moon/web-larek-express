@@ -9,7 +9,7 @@ import ordersRouter from './routes/order';
 import uploadRouter from './routes/upload';
 import errorHandler from './middlewares/error-handler';
 import { requestLogger, errorLogger } from './middlewares/logger';
-import { config } from './config';
+import config from './config';
 
 const cookieParser = require('cookie-parser');
 

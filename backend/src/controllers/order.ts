@@ -4,7 +4,7 @@ import { isEmail } from 'validator';
 import Product from '../models/product';
 import BadRequestError from '../errors/bad-request-error';
 
-export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
+const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const {
       payment, email, phone, address, total, items,
@@ -18,16 +18,16 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
       return next(new BadRequestError('Массив с id товаров пуст'));
     }
 
-    for (const item of items) {
-      if (!productsIds.includes(item)) {
-        return next(new BadRequestError(`Продукт ${item} не найден`));
-      }
+    const hasMissingProduct = items.some((item) => !productsIds.includes(item));
+    if (hasMissingProduct) {
+      const missingProduct = items.find((item) => !productsIds.includes(item));
+      return next(new BadRequestError(`Продукт ${missingProduct} не найден`));
     }
 
-    for (const product of products) {
-      if (product.price === null) {
-        return next(new BadRequestError(`Продукт ${product._id} не продается`));
-      }
+    const hasUnsellableProduct = products.some((product) => product.price === null);
+    if (hasUnsellableProduct) {
+      const unsellableProduct = items.find((product) => product.price === null);
+      return next(new BadRequestError(`Продукт ${unsellableProduct} не продается`));
     }
 
     if (!total || total !== totalPrice) {
@@ -61,6 +61,8 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
       total,
     });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
+
+export default createOrder;

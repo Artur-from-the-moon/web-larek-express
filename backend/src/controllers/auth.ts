@@ -1,5 +1,5 @@
 import {
-  Request, Response, NextFunction, CookieOptions,
+  Request, Response, NextFunction,
 } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -8,24 +8,26 @@ import NotFoundError from '../errors/not-found-error';
 import ConflictError from '../errors/conflict-error';
 import BadRequestError from '../errors/bad-request-error';
 
-export const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
-  User.findById((req as any).user._id)
-    .then((user: any) => {
-      if (!user) {
-        return next(new NotFoundError('Пользователь не найден'));
-      }
-      res.send({
-        user: {
-          email: user.email,
-          name: user.name,
-        },
-        success: true,
-      });
-    })
-    .catch((error) => {
-      next(error);
+export const getCurrentUser = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => User.findById((req as any).user._id)
+  .then((user: any) => {
+    if (!user) {
+      return next(new NotFoundError('Пользователь не найден'));
+    }
+    return res.send({
+      user: {
+        email: user.email,
+        name: user.name,
+      },
+      success: true,
     });
-};
+  })
+  .catch((error) => {
+    next(error);
+  });
 
 export const login = (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
@@ -54,7 +56,7 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
         maxAge: 7 * 24 * 60 * 60 * 1000,
         path: '/',
       });
-      res.send({
+      return res.send({
         user: {
           email: user.email,
           name: user.name,
@@ -68,48 +70,50 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-export const register = (req: Request, res: Response, next: NextFunction) => {
-  bcrypt.hash(req.body.password, 10)
-    .then((hash) => User.create({
-      name: req.body.name,
-      email: req.body.email,
-      password: hash,
-    }))
-    .then((user) => {
-      const accessToken = jwt.sign(
-        { _id: user._id },
-        'some-secret-access-key',
-        { expiresIn: '10m' },
-      );
-      const refreshToken = jwt.sign(
-        { _id: user._id },
-        'some-secret-refresh-key',
-        { expiresIn: '7d' },
-      );
+export const register = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => bcrypt.hash(req.body.password, 10)
+  .then((hash) => User.create({
+    name: req.body.name,
+    email: req.body.email,
+    password: hash,
+  }))
+  .then((user) => {
+    const accessToken = jwt.sign(
+      { _id: user._id },
+      'some-secret-access-key',
+      { expiresIn: '10m' },
+    );
+    const refreshToken = jwt.sign(
+      { _id: user._id },
+      'some-secret-refresh-key',
+      { expiresIn: '7d' },
+    );
 
-      res.cookie('REFRESH_TOKEN', refreshToken, {
-        sameSite: 'lax',
-        secure: true,
-        httpOnly: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        path: '/',
-      });
-      res.send({
-        user: {
-          email: user.email,
-          name: user.name,
-        },
-        success: true,
-        accessToken,
-      });
-    })
-    .catch((error) => {
-      if (error instanceof Error && error.message.includes('E11000')) {
-        return next(new ConflictError('Пользователь с таким email уже существует'));
-      }
-      next(error);
+    res.cookie('REFRESH_TOKEN', refreshToken, {
+      sameSite: 'lax',
+      secure: true,
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: '/',
     });
-};
+    return res.send({
+      user: {
+        email: user.email,
+        name: user.name,
+      },
+      success: true,
+      accessToken,
+    });
+  })
+  .catch((error) => {
+    if (error instanceof Error && error.message.includes('E11000')) {
+      return next(new ConflictError('Пользователь с таким email уже существует'));
+    }
+    return next(error);
+  });
 
 export const logout = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -136,9 +140,10 @@ export const logout = async (req: Request, res: Response, next: NextFunction) =>
       httpOnly: true,
     });
 
-    res.send({ success: true });
+    return res.send({ success: true });
   } catch (error) {
     next(error);
+    return undefined;
   }
 };
 
@@ -177,7 +182,7 @@ export const refreshAccessToken = async (req: Request, res: Response, next: Next
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: '/',
     });
-    res.send({
+    return res.send({
       user: {
         email: user.email,
         name: user.name,
@@ -187,5 +192,6 @@ export const refreshAccessToken = async (req: Request, res: Response, next: Next
     });
   } catch (error) {
     next(error);
+    return undefined;
   }
 };
