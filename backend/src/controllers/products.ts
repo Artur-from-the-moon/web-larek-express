@@ -4,7 +4,6 @@ import path from 'path';
 import Product from '../models/product';
 import ConflictError from '../errors/conflict-error';
 import NotFoundError from '../errors/not-found-error';
-import BadRequestError from '../errors/bad-request-error';
 
 export const getProducts = (_req: Request, res: Response, next: NextFunction) => Product.find({})
   .then((products) => res.send({
@@ -65,9 +64,6 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
       if (error instanceof Error && error.message.includes('E11000')) {
         return next(new ConflictError('Товар с таким заголовком уже существует'));
       }
-      if (error.name === 'CastError') {
-        return next(new BadRequestError('Переданный _id товара невалиден'));
-      }
       return next(error);
     });
 };
@@ -84,8 +80,5 @@ export const deleteProduct = (
     return res.send({ data: product });
   })
   .catch((error) => {
-    if (error.name === 'CastError') {
-      return next(new BadRequestError('Переданный _id товара невалиден'));
-    }
-    return next(error);
+    next(error);
   });

@@ -64,6 +64,14 @@ export const validateProductBody = celebrate({
   [Segments.BODY]: productSchema,
 });
 
+const objIdSchema = Joi.object({
+  productId: Joi.string().required().regex(/^[0-9a-f]{24}$/i),
+});
+
+export const validateObjId = celebrate({
+  [Segments.PARAMS]: objIdSchema,
+});
+
 const updateProductSchema = Joi.object({
   title: Joi.string().min(2).max(30).messages({
     'string.min': 'Минимальная длина поля title - 2',
