@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import config from '../config';
 
 const uploadFile = (req: Request, res: Response, next: NextFunction) => {
   const { file } = req;
@@ -9,7 +10,7 @@ const uploadFile = (req: Request, res: Response, next: NextFunction) => {
   }
 
   res.send({
-    fileName: `/images/${file.filename}`,
+    fileName: `/${config.UPLOAD_PATH}/${file.filename}`,
     originalName: file.originalname,
   });
 };
