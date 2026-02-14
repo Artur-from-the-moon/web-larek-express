@@ -7,6 +7,7 @@ import User from '../models/user';
 import NotFoundError from '../errors/not-found-error';
 import ConflictError from '../errors/conflict-error';
 import BadRequestError from '../errors/bad-request-error';
+import config from '../config';
 
 export const getCurrentUser = (
   req: Request,
@@ -14,10 +15,7 @@ export const getCurrentUser = (
   next: NextFunction,
 ) => User.findById((req as any).user._id)
   .then((user: any) => {
-    if (!user) {
-      return next(new NotFoundError('Пользователь не найден'));
-    }
-    return res.send({
+    res.send({
       user: {
         email: user.email,
         name: user.name,
@@ -32,20 +30,16 @@ export const getCurrentUser = (
 export const login = (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    return next(new Error('Email и пароль обязательны'));
-  }
-
   return User.findUserByCredentials(email, password)
     .then((user: any) => {
       const accessToken = jwt.sign(
         { _id: user._id },
-        'some-secret-access-key',
+        config.ACCESS_KEY,
         { expiresIn: '10m' },
       );
       const refreshToken = jwt.sign(
         { _id: user._id },
-        'some-secret-refresh-key',
+        config.REFRESH_KEY,
         { expiresIn: '7d' },
       );
 
@@ -83,12 +77,12 @@ export const register = (
   .then((user) => {
     const accessToken = jwt.sign(
       { _id: user._id },
-      'some-secret-access-key',
+      config.ACCESS_KEY,
       { expiresIn: '10m' },
     );
     const refreshToken = jwt.sign(
       { _id: user._id },
-      'some-secret-refresh-key',
+      config.REFRESH_KEY,
       { expiresIn: '7d' },
     );
 
@@ -124,7 +118,7 @@ export const logout = async (req: Request, res: Response, next: NextFunction) =>
     }
     let payload;
     try {
-      payload = jwt.verify(REFRESH_TOKEN, 'some-secret-refresh-key') as any;
+      payload = jwt.verify(REFRESH_TOKEN, config.REFRESH_KEY) as any;
     } catch (error) {
       return next(new BadRequestError('Невалидный токен'));
     }
@@ -155,7 +149,7 @@ export const refreshAccessToken = async (req: Request, res: Response, next: Next
     }
     let payload;
     try {
-      payload = jwt.verify(REFRESH_TOKEN, 'some-secret-refresh-key') as any;
+      payload = jwt.verify(REFRESH_TOKEN, config.REFRESH_KEY) as any;
     } catch (error) {
       return next(new BadRequestError('Невалидный токен'));
     }
@@ -166,12 +160,12 @@ export const refreshAccessToken = async (req: Request, res: Response, next: Next
 
     const accessToken = jwt.sign(
       { _id: user._id },
-      'some-secret-access-key',
+      config.ACCESS_KEY,
       { expiresIn: '10m' },
     );
     const refreshToken = jwt.sign(
       { _id: user._id },
-      'some-secret-refresh-key',
+      config.REFRESH_KEY,
       { expiresIn: '7d' },
     );
 

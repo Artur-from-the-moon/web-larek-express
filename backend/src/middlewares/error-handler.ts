@@ -1,6 +1,6 @@
-import { Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 
-function errorHandler(error: any, res: Response) {
+function errorHandler(error: any, _req: Request, res: Response, _next: NextFunction) {
   const statusCode = error.statusCode || 500;
   const message = error.message || 'Внутрення ошибка сервера';
   const errorResponse = { message };
